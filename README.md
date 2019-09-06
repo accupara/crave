@@ -221,3 +221,59 @@ When a job ID is provided as a parameter, crave will stop that job id only. To s
 ```text
 crave stop 5102
 ```
+
+## crave.yaml
+Crave supports yaml file `crave.yaml` which allows users to 
+-- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
+-- add user-specific files which are not a part of source repository
+
+`crave.yaml` needs to be added to source repository for crave to use it.
+```text
+$git add crave.yaml
+``` 
+
+Following are the fields for `crave.yaml`
+- `image`
+This is used to override the `Build Image` specified in `Project Configuration`
+```text
+$cat crave.yaml
+Linux kernel:
+  image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
+```
+
+- `artifacts`
+  This can be used to override the `Build Artifacts` specified in `Project Configuration`
+```text
+$cat crave.yaml
+rsync:
+  artifacts: ["compat.o" ,"io.o"]
+```
+
+- `include_files`
+This is used to create patch for custom files in a user's workspace.
+```text
+$cat crave.yaml
+protocolbuffers:
+  include_files:
+   - testFile
+```
+
+- `no_branch_per_workspace`
+This is set to `True` to ensure that same workspace is used across different branches.
+If it is not set, unique workspaces are used for different branches.
+```text
+$cat crave.yaml
+linkerd:
+  no_branch_per_workspace: True
+```
+
+crave supports configuring multiple projects using the same `crave.yaml` file
+```text
+$cat crave.yaml
+Linux kernel:
+  image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
+rsync:
+  include_files:
+   - testfile1
+   - testfile2
+```
