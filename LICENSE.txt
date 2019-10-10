@@ -1,2 +1,5 @@
-License: CC BY-NC-ND 3.0
-This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+License: 
+
+© Crave.io Inc. 2019.
+
+If you have entered into a commercial software license agreement with Crave.io Inc., this work is licensed to you pursuant to the terms of that agreement.  However, if you have not entered into any such agreement with Crave.io, this work is licensed to you pursuant to the Terms of Use available at https://crave.io/crave-website-terms-of-use/
