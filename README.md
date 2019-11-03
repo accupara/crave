@@ -8,6 +8,8 @@ Crave looks for a `crave.conf` configuration file in the current working directo
 
 The latest stable version of `crave` can be download from the [crave GitHub](https://github.com/accupara/crave/releases) page. Pick the binary for your platform. For Windows users, download and unzip the contents into a folder.
 
+Alternatively, your administrator approved version of crave can be downloaded from the "Downloads" page in the Crave UI.
+
 When running crave, you might be asked to give permissions to a program called `chisel`. Please allow this program to run and accept connections.
 
 ## Syntax
@@ -241,12 +243,23 @@ When a job ID is provided as a parameter, crave will stop that job id only. To s
 crave stop 5102
 ```
 
-### crave fullbuild
+### crave discard
 
+Crave allows you to proactively delete your workspace without waiting for the default workspace GC cycle to clean it up.
 
-### crave localbuild
+```text
+$ ./crave discard --help
+usage: crave discard [-h] --current-workspace [--projectID PROJECTID]
 
-## crave.yaml
+optional arguments:
+  -h, --help            show this help message and exit
+  --current-workspace, --current-ws
+                        delete the current workspace
+  --projectID PROJECTID
+                        Id of the project to build
+```
+
+## Configuring and using `crave.yaml`
 Crave supports yaml file `crave.yaml` which allows users to
 -- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
 -- add user-specific files which are not a part of source repository
