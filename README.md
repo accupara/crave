@@ -45,17 +45,31 @@ Crave supports the following commands.
 
 ```text
 
-  {version,list,set,stop,run,ssh,pull,fullbuild,localrun}
+positional arguments:
+  {version,list,set,stop,run,ssh,pull,fullbuild,localrun,discard}
                         sub-command help
-    version             Crave version
+    version             Prints crave client version
     list                List my projects, running builds and ssh sessions
     set                 Set config options
     stop                Stop a build or interactive session.
-    run                 Run command
+    run                 Run build command on crave servers
     ssh                 Start an SSH session on the remote workspace
-    pull                Pull job artifacts
-    fullbuild           Start a new sandbox build
-    localrun            Run commands locally
+    pull                Pull job artifacts from build workspace to local disk
+    fullbuild           Start a new sandbox build. For use with CI (e.g.,
+                        Jenkins)
+    localrun            Run build commands on local machine
+    discard             discard a user workspace
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIGFILE, --configFile CONFIGFILE
+                        Config file to use for the command. If not provided,
+                        this file is searched in the parent directories and at
+                        $HOME/crave.conf
+  -q, --quiet           Silence HTTPS warnings. Also do not show progress bar
+                        when downloading artifcts.
+  -v, --verbose         print out verbose messages
+  -n, --noUpdate        Do not check for crave updates
 
 ```
 
@@ -65,7 +79,7 @@ Prints the version of crave you are using.
 
 ```text
 $ crave version
-crave 0.2-5484 darwin/x86_64
+crave 0.2-5783 darwin/x86_64
 ```
 
 ### crave list
@@ -95,6 +109,11 @@ Your jobs:
 ```
 
 ### crave run
+
+This mode runs the build commands provided on the command-line
+and preserves the workspace at the end of the build which enables
+users to pull the artifacts back to local disk after the build
+is complete. It also allows users to run incremental builds.
 
 When executed without any further options, crave will run the default configured set of commands from the project configuration. If any commands are specified on the command-line, then crave will override the configured commands with these.
 
@@ -222,15 +241,17 @@ When a job ID is provided as a parameter, crave will stop that job id only. To s
 crave stop 5102
 ```
 
+### crave fullbuild
+
+
+### crave localbuild
+
 ## crave.yaml
-Crave supports yaml file `crave.yaml` which allows users to 
+Crave supports yaml file `crave.yaml` which allows users to
 -- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
 -- add user-specific files which are not a part of source repository
 
-`crave.yaml` needs to be added to source repository for crave to use it.
-```text
-$git add crave.yaml
-``` 
+`crave.yaml` does not need to be added to source repository for crave to use it.
 
 Following are the fields for `crave.yaml`
 - `image`
@@ -256,6 +277,7 @@ $cat crave.yaml
 protocolbuffers:
   include_files:
    - testFile
+   - Makefile.custom
 ```
 
 - `no_branch_per_workspace`
