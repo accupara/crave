@@ -234,22 +234,44 @@ crave pull build/kernel/fs
 Stops any running jobs on the current workspace.
 
 ```text
-crave stop
+$ crave stop --help
+usage: crave stop [-h] [--projectID PROJECTID] [--force] [--ssh] [--all]
+                  [ids [ids ...]]
+
+positional arguments:
+  ids                   one or more job ids of the jobs to stop
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --projectID PROJECTID
+                        ID of the project for which jobs should be stopped
+  --force               Force-stop all jobs queued or running on this
+                        workspace
+  --ssh                 Stop all ssh sessions on this workspace
+  --all                 Stop all ssh sessions and jobs running on this
+                        workspace
 ```
 
-When a job ID is provided as a parameter, crave will stop that job id only. To stop more than one jobs, the job IDs could be provided as a list. There is no output to this command.
+When a job ID is provided as a parameter, crave will only stop that job. To stop more than one jobs, the job IDs could be provided as a list. If a job ID is not specified, crave will stop any jobs running on the current workspace (for the current directory).
 
 ```text
 crave stop 5102
 ```
+
+By default, `crave stop` will only stop the running build jobs on this workspace. To stop SSH sessions, use the `--ssh` option
+```text
+crave stop --ssh
+```
+
+To stop all jobs and SSH sessions, use the `--all` flag.
 
 ### crave discard
 
 Crave allows you to proactively delete your workspace without waiting for the default workspace GC cycle to clean it up.
 
 ```text
-$ ./crave discard --help
-usage: crave discard [-h] --current-workspace [--projectID PROJECTID]
+$ crave discard --help
+usage: crave discard [-h] --current-workspace [--projectID PROJECTID] [-y]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -257,9 +279,10 @@ optional arguments:
                         delete the current workspace
   --projectID PROJECTID
                         Id of the project to build
+  -y, --yes             Silence the confirmation question
 ```
 
-## Configuring and using `crave.yaml`
+## Customizing build configuration with `crave.yml`
 Crave supports yaml file `crave.yaml` which allows users to
 -- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
 -- add user-specific files which are not a part of source repository
@@ -270,7 +293,7 @@ Following are the fields for `crave.yaml`
 - `image`
 This is used to override the `Build Image` specified in `Project Configuration`
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 Linux kernel:
   image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
 ```
@@ -278,7 +301,7 @@ Linux kernel:
 - `artifacts`
   This can be used to override the `Build Artifacts` specified in `Project Configuration`
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 rsync:
   artifacts: ["compat.o" ,"io.o"]
 ```
@@ -286,7 +309,7 @@ rsync:
 - `include_files`
 This is used to create patch for custom files in a user's workspace.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 protocolbuffers:
   include_files:
    - testFile
@@ -297,14 +320,25 @@ protocolbuffers:
 This is set to `True` to ensure that same workspace is used across different branches.
 If it is not set, unique workspaces are used for different branches.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 linkerd:
   no_branch_per_workspace: True
 ```
 
-crave supports configuring multiple projects using the same `crave.yaml` file
+- `env`
+This tag can be used to add custom environment variables to `crave run` or to the SSH sessions.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
+MyProject:
+  env:
+    key1: value1
+    key2: value2
+```
+
+
+Crave supports configuring multiple projects using the same `crave.yaml` file
+```text
+$ cat crave.yaml
 Linux kernel:
   image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
 rsync:
