@@ -243,6 +243,13 @@ When a job ID is provided as a parameter, crave will stop that job id only. To s
 crave stop 5102
 ```
 
+By default, `crave stop` will only stop the running build jobs on this workspace. To stop SSH sessions, use the `--ssh` option
+```text
+crave stop --ssh
+```
+
+To stop all jobs and SSH sessions, use the `--all` flag.
+
 ### crave discard
 
 Crave allows you to proactively delete your workspace without waiting for the default workspace GC cycle to clean it up.
@@ -270,7 +277,7 @@ Following are the fields for `crave.yaml`
 - `image`
 This is used to override the `Build Image` specified in `Project Configuration`
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 Linux kernel:
   image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
 ```
@@ -278,7 +285,7 @@ Linux kernel:
 - `artifacts`
   This can be used to override the `Build Artifacts` specified in `Project Configuration`
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 rsync:
   artifacts: ["compat.o" ,"io.o"]
 ```
@@ -286,7 +293,7 @@ rsync:
 - `include_files`
 This is used to create patch for custom files in a user's workspace.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 protocolbuffers:
   include_files:
    - testFile
@@ -297,14 +304,25 @@ protocolbuffers:
 This is set to `True` to ensure that same workspace is used across different branches.
 If it is not set, unique workspaces are used for different branches.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
 linkerd:
   no_branch_per_workspace: True
 ```
 
-crave supports configuring multiple projects using the same `crave.yaml` file
+- `env`
+This tag can be used to add custom environment variables to `crave run` or to the SSH sessions.
 ```text
-$cat crave.yaml
+$ cat crave.yaml
+MyProject:
+  env:
+    key1: value1
+    key2: value2
+```
+
+
+Crave supports configuring multiple projects using the same `crave.yaml` file
+```text
+$ cat crave.yaml
 Linux kernel:
   image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
 rsync:
