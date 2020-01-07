@@ -252,7 +252,7 @@ optional arguments:
                         workspace
 ```
 
-When a job ID is provided as a parameter, crave will stop that job id only. To stop more than one jobs, the job IDs could be provided as a list. There is no output to this command.
+When a job ID is provided as a parameter, crave will only stop that job. To stop more than one jobs, the job IDs could be provided as a list. If a job ID is not specified, crave will stop any jobs running on the current workspace (for the current directory).
 
 ```text
 crave stop 5102
@@ -270,8 +270,8 @@ To stop all jobs and SSH sessions, use the `--all` flag.
 Crave allows you to proactively delete your workspace without waiting for the default workspace GC cycle to clean it up.
 
 ```text
-$ ./crave discard --help
-usage: crave discard [-h] --current-workspace [--projectID PROJECTID]
+$ crave discard --help
+usage: crave discard [-h] --current-workspace [--projectID PROJECTID] [-y]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -279,9 +279,10 @@ optional arguments:
                         delete the current workspace
   --projectID PROJECTID
                         Id of the project to build
+  -y, --yes             Silence the confirmation question
 ```
 
-## Configuring and using `crave.yaml`
+## Customizing build configuration with `crave.yml`
 Crave supports yaml file `crave.yaml` which allows users to
 -- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
 -- add user-specific files which are not a part of source repository
