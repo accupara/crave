@@ -234,7 +234,22 @@ crave pull build/kernel/fs
 Stops any running jobs on the current workspace.
 
 ```text
-crave stop
+$ crave stop --help
+usage: crave stop [-h] [--projectID PROJECTID] [--force] [--ssh] [--all]
+                  [ids [ids ...]]
+
+positional arguments:
+  ids                   one or more job ids of the jobs to stop
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --projectID PROJECTID
+                        ID of the project for which jobs should be stopped
+  --force               Force-stop all jobs queued or running on this
+                        workspace
+  --ssh                 Stop all ssh sessions on this workspace
+  --all                 Stop all ssh sessions and jobs running on this
+                        workspace
 ```
 
 When a job ID is provided as a parameter, crave will stop that job id only. To stop more than one jobs, the job IDs could be provided as a list. There is no output to this command.
