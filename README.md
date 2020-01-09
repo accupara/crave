@@ -8,6 +8,8 @@ Crave looks for a `crave.conf` configuration file in the current working directo
 
 The latest stable version of `crave` can be download from the [crave GitHub](https://github.com/accupara/crave/releases) page. Pick the binary for your platform. For Windows users, download and unzip the contents into a folder.
 
+Alternatively, your administrator approved version of crave can be downloaded from the "Downloads" page in the Crave UI.
+
 When running crave, you might be asked to give permissions to a program called `chisel`. Please allow this program to run and accept connections.
 
 ## Syntax
@@ -45,17 +47,31 @@ Crave supports the following commands.
 
 ```text
 
-  {version,list,set,stop,run,ssh,pull,fullbuild,localrun}
+positional arguments:
+  {version,list,set,stop,run,ssh,pull,fullbuild,localrun,discard}
                         sub-command help
-    version             Crave version
+    version             Prints crave client version
     list                List my projects, running builds and ssh sessions
     set                 Set config options
     stop                Stop a build or interactive session.
-    run                 Run command
+    run                 Run build command on crave servers
     ssh                 Start an SSH session on the remote workspace
-    pull                Pull job artifacts
-    fullbuild           Start a new sandbox build
-    localrun            Run commands locally
+    pull                Pull job artifacts from build workspace to local disk
+    fullbuild           Start a new sandbox build. For use with CI (e.g.,
+                        Jenkins)
+    localrun            Run build commands on local machine
+    discard             discard a user workspace
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIGFILE, --configFile CONFIGFILE
+                        Config file to use for the command. If not provided,
+                        this file is searched in the parent directories and at
+                        $HOME/crave.conf
+  -q, --quiet           Silence HTTPS warnings. Also do not show progress bar
+                        when downloading artifcts.
+  -v, --verbose         print out verbose messages
+  -n, --noUpdate        Do not check for crave updates
 
 ```
 
@@ -65,7 +81,7 @@ Prints the version of crave you are using.
 
 ```text
 $ crave version
-crave 0.2-5484 darwin/x86_64
+crave 0.2-5783 darwin/x86_64
 ```
 
 ### crave list
@@ -95,6 +111,11 @@ Your jobs:
 ```
 
 ### crave run
+
+This mode runs the build commands provided on the command-line
+and preserves the workspace at the end of the build which enables
+users to pull the artifacts back to local disk after the build
+is complete. It also allows users to run incremental builds.
 
 When executed without any further options, crave will run the default configured set of commands from the project configuration. If any commands are specified on the command-line, then crave will override the configured commands with these.
 
@@ -213,11 +234,115 @@ crave pull build/kernel/fs
 Stops any running jobs on the current workspace.
 
 ```text
-crave stop
+$ crave stop --help
+usage: crave stop [-h] [--projectID PROJECTID] [--force] [--ssh] [--all]
+                  [ids [ids ...]]
+
+positional arguments:
+  ids                   one or more job ids of the jobs to stop
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --projectID PROJECTID
+                        ID of the project for which jobs should be stopped
+  --force               Force-stop all jobs queued or running on this
+                        workspace
+  --ssh                 Stop all ssh sessions on this workspace
+  --all                 Stop all ssh sessions and jobs running on this
+                        workspace
 ```
 
-When a job ID is provided as a parameter, crave will stop that job id only. To stop more than one jobs, the job IDs could be provided as a list. There is no output to this command.
+When a job ID is provided as a parameter, crave will only stop that job. To stop more than one jobs, the job IDs could be provided as a list. If a job ID is not specified, crave will stop any jobs running on the current workspace (for the current directory).
 
 ```text
 crave stop 5102
+```
+
+By default, `crave stop` will only stop the running build jobs on this workspace. To stop SSH sessions, use the `--ssh` option
+```text
+crave stop --ssh
+```
+
+To stop all jobs and SSH sessions, use the `--all` flag.
+
+### crave discard
+
+Crave allows you to proactively delete your workspace without waiting for the default workspace GC cycle to clean it up.
+
+```text
+$ crave discard --help
+usage: crave discard [-h] --current-workspace [--projectID PROJECTID] [-y]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --current-workspace, --current-ws
+                        delete the current workspace
+  --projectID PROJECTID
+                        Id of the project to build
+  -y, --yes             Silence the confirmation question
+```
+
+## Customizing build configuration with `crave.yml`
+Crave supports yaml file `crave.yaml` which allows users to
+-- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
+-- add user-specific files which are not a part of source repository
+
+`crave.yaml` does not need to be added to source repository for crave to use it.
+
+Following are the fields for `crave.yaml`
+- `image`
+This is used to override the `Build Image` specified in `Project Configuration`
+```text
+$ cat crave.yaml
+Linux kernel:
+  image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
+```
+
+- `artifacts`
+  This can be used to override the `Build Artifacts` specified in `Project Configuration`
+```text
+$ cat crave.yaml
+rsync:
+  artifacts: ["compat.o" ,"io.o"]
+```
+
+- `include_files`
+This is used to create patch for custom files in a user's workspace.
+```text
+$ cat crave.yaml
+protocolbuffers:
+  include_files:
+   - testFile
+   - Makefile.custom
+```
+
+- `no_branch_per_workspace`
+This is set to `True` to ensure that same workspace is used across different branches.
+If it is not set, unique workspaces are used for different branches.
+```text
+$ cat crave.yaml
+linkerd:
+  no_branch_per_workspace: True
+```
+
+- `env`
+This tag can be used to add custom environment variables to `crave run` or to the SSH sessions.
+```text
+$ cat crave.yaml
+MyProject:
+  env:
+    key1: value1
+    key2: value2
+```
+
+
+Crave supports configuring multiple projects using the same `crave.yaml` file
+```text
+$ cat crave.yaml
+Linux kernel:
+  image: "accupara/lkbuild@sha256:c31ec38936e30bce9ed7355bb428ab8173900c0c4e7b3f5ff626d195b0484d73"
+rsync:
+  include_files:
+   - testfile1
+   - testfile2
 ```
