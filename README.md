@@ -282,6 +282,20 @@ optional arguments:
   -y, --yes             Silence the confirmation question
 ```
 
+`crave discard` shows a confirmation question and success message.
+```text
+$ crave discard --current-ws
+This action will discard the current workspace. Continue? [Y/n] y
+workspace deleted successfully
+```
+
+If the workspace does not exist, then `crave discard` would show the following message
+```text
+$ crave discard --current-ws
+This action will discard the current workspace. Continue? [Y/n]
+workspace has already been deleted
+```
+
 ## Customizing build configuration with `crave.yml`
 Crave supports yaml file `crave.yaml` which allows users to
 -- override certain project settings (such as docker image used for build and artifacts to be downloaded after build)
@@ -316,13 +330,13 @@ protocolbuffers:
    - Makefile.custom
 ```
 
-- `no_branch_per_workspace`
+- `workspace_per_branch`
 This is set to `True` to ensure that same workspace is used across different branches.
 If it is not set, unique workspaces are used for different branches.
 ```text
 $ cat crave.yaml
 linkerd:
-  no_branch_per_workspace: True
+  workspace_per_branch: True
 ```
 
 - `env`
