@@ -47,29 +47,36 @@ Crave supports the following commands.
 
 ```text
 
+$ crave --help
+usage: crave-0.2-6591 [-h] [-c CONFIGFILE] [-q] [-v] [-n] {version,list,set,stop,run,exec,ssh,pull,push,fullbuild,localrun,discard,lookbusy,getlog,fetchdiagnostics,devspace,clone} ...
+
+Crave Build invoker
+
 positional arguments:
-  {version,list,set,stop,run,ssh,pull,fullbuild,localrun,discard}
+  {version,list,set,stop,run,exec,ssh,pull,push,fullbuild,localrun,discard,lookbusy,getlog,fetchdiagnostics,devspace,clone}
                         sub-command help
     version             Prints crave client version
     list                List my projects, running builds and ssh sessions
     set                 Set config options
     stop                Stop a build or interactive session.
     run                 Run build command on crave servers
+    exec                Runs additional commands in current job
     ssh                 Start an SSH session on the remote workspace
     pull                Pull job artifacts from build workspace to local disk
-    fullbuild           Start a new sandbox build. For use with CI (e.g.,
-                        Jenkins)
+    push                push job artifacts to build workspace from local disk
+    fullbuild           Start a new sandbox build. For use with CI (e.g., Jenkins)
     localrun            Run build commands on local machine
     discard             discard a user workspace
+    getlog              Show logs of current (or previous) build
+    fetchdiagnostics    Show system logs for build
+    devspace            Start an SSH session on the remote devspace
+    clone               Clone or destroy a project source into a devspace location
 
 optional arguments:
   -h, --help            show this help message and exit
   -c CONFIGFILE, --configFile CONFIGFILE
-                        Config file to use for the command. If not provided,
-                        this file is searched in the parent directories and at
-                        $HOME/crave.conf
-  -q, --quiet           Silence HTTPS warnings. Also do not show progress bar
-                        when downloading artifcts.
+                        Config file to use for the command. If not provided, this file is searched in the parent directories and at $HOME/crave.conf
+  -q, --quiet           Silence HTTPS warnings. Also do not show progress bar when downloading artifacts.
   -v, --verbose         print out verbose messages
   -n, --noUpdate        Do not check for crave updates
 
@@ -81,7 +88,7 @@ Prints the version of crave you are using.
 
 ```text
 $ crave version
-crave 0.2-5783 darwin/x86_64
+crave 0.2-6591 darwin/x86_64
 ```
 
 ### crave list
@@ -210,10 +217,6 @@ This option tells crave to not download any artifacts after the build completes.
 - `--disable-build-cache`
 
 This option tells crave to not use the build cache during the build process. All commands will be run through the compiler and no acceleration is enabled.
-
-- `--artifacts`
-
-This option tells crave to automatically download the specified artifact after the build is complete. The artifact is downloaded to the same location in the current sources as is present in the built workspace.
 
 ### crave ssh
 
