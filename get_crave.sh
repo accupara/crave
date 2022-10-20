@@ -3,7 +3,7 @@
 
 OS='linux'
 crave_url_base='https://github.com/accupara/crave/releases/download/'
-crave_version='0.2-6656'
+crave_version='0.2-6659'
 crave_postfix='amd64.bin'
 
 
