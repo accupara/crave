@@ -1,7 +1,7 @@
 #!/bin/sh
 # Copyright (c) 2020-2023 Crave crave.io Inc. All rights reserved
 
-OS='linux'
+os='linux'
 crave_url_base='https://github.com/accupara/crave/releases/download/'
 crave_version='0.2-6751'
 crave_postfix='amd64.bin'
@@ -18,7 +18,7 @@ else
     os='unknown'
 fi
 
-if [[ "OS" == 'unknown' ]]; then
+if [[ "os" == 'unknown' ]]; then
     echo Only OSX and Linux are supported for auto installation at this time
     exit 1
 fi
