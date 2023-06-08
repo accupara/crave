@@ -6,6 +6,7 @@ crave_url_base='https://github.com/accupara/crave/releases/download/'
 crave_version='0.2-6798'
 crave_arch='amd64'
 crave_postfix='.bin'
+crave_default_location='/usr/local/bin'
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux
@@ -31,6 +32,25 @@ if [[ "os" == 'unknown' ]]; then
 fi
 
 crave_url="$crave_url_base/$crave_version/crave-$crave_version-$os-$crave_arch$crave_postfix"
-echo $crave_url
+
 curl -L $crave_url --output crave
 chmod +x crave
+
+
+echo -n "Install to system path (default: /usr/local/bin) [y]/n ? "
+read ans
+case $ans in
+    Y|y|1|"" ) install_crave=true;;
+    N|n|2 )  echo "Skpping crave install"; install_crave=false;;
+    *     )  echo "Unknow input"; exit ;;
+esac
+
+if [[ $install_crave == true ]]; then
+    echo -n "Location to install crave [/usr/local/bin]: "
+    read crave_location
+    if [[ "$crave_locatin" == "" ]]; then
+       crave_location="$crave_default_location"
+    fi
+    echo "Installing crave to location $crave_location (will require root)"
+    sudo mv ./crave "$crave_location"
+fi
