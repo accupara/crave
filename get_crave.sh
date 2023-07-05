@@ -37,13 +37,17 @@ curl -L $crave_url --output crave
 chmod +x crave
 
 
-echo -n "Install to system path (default: /usr/local/bin) [y]/n ? "
-read ans
-case $ans in
-    Y|y|1|"" ) install_crave=true;;
-    N|n|2 )  echo "Skpping crave install"; install_crave=false;;
-    *     )  echo "Unknow input"; exit ;;
-esac
+if [ -p /dev/stdin ] ; then
+    install_crave=false
+else
+    echo -n "Install to system path (default: /usr/local/bin) [y]/n ? "
+    read ans
+    case $ans in
+        Y|y|1|"" ) install_crave=true;;
+        N|n|2 )  echo "Skpping crave install"; install_crave=false;;
+        *     )  echo "Unknow input"; exit ;;
+    esac
+fi
 
 if [[ $install_crave == true ]]; then
     echo -n "Location to install crave [/usr/local/bin]: "
