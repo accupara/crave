@@ -1,4 +1,4 @@
-# Copyright (c) 2020-2023 Crave Crave.io Inc. All rights reserved
+# Copyright (c) 2020-2024 Crave Crave.io Inc. All rights reserved
 
 $OS="Windows"
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2020-2023 Crave crave.io Inc. All rights reserved
+# Copyright (c) 2020-2024 Crave crave.io Inc. All rights reserved
 
 os='linux'
 crave_url_base='https://github.com/accupara/crave/releases/download/'
