@@ -2,7 +2,7 @@
 
 Crave is a command line interface for running commands against [Crave](https://www.crave.io/) platform clusters.
 
-Crave looks for a `crave.conf` configuration file in the current working directory or any of it's parent directories. If it does not find the file there, it will search the user's `${HOME}` directory for the configuration file. You can specify the crave.conf to be used by setting it in the command line using the `-c` (or `--configFile`) parameter.
+Crave looks for a `crave.conf` configuration file in the current working directory or any of its parent directories. If it does not find the file there, it will search the user's `${HOME}` directory for the configuration file. You can specify the crave.conf to be used by setting it in the command line using the `-c` (or `--configFile`) parameter.
 
 ## Installation
 
