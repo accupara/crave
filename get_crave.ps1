@@ -2,17 +2,22 @@
 
 $OS="Windows"
 
-$Env:CRAVE_URL_BASE = "https://github.com/accupara/crave/releases/download/"
-$Env:CRAVE_VERSION = "0.2-6956"
+$Env:CRAVE_URL_BASE = "https://github.com/accupara/crave/releases/latest/download/"
 $Env:CRAVE_POSTFIX = ".zip"
+
 if ($IsWindows -or $ENV:OS) {
-    Write-Host "Downloading $Env:CRAVE_VERSION for Windows"
+    Write-Host "Downloading latest version of Crave for Windows"
 } else {
     Write-Host "Only Windows host is supported for auto installation with this script."
     exit 1
 }
 
-$Env:CRAVE_URL = $Env:CRAVE_URL_BASE + "/" + $Env:CRAVE_VERSION + "/" + "crave-windows-" + $Env:CRAVE_VERSION + "-" + $OS + $Env:CRAVE_POSTFIX
+$Env:CRAVE_URL = (Invoke-WebRequest -Uri $Env:CRAVE_URL_BASE -UseBasicParsing | ConvertFrom-Json).assets | Where-Object { $_.name -like "*windows*" -and $_.name -like "*.zip" } | Select-Object -ExpandProperty browser_download_url
+
+if (-not $Env:CRAVE_URL) {
+    Write-Host "Unable to fetch the download link. Please try again later."
+    exit 1
+}
 
 Invoke-WebRequest $Env:CRAVE_URL -OutFile 'crave-bin.zip'
 Write-Host "Download complete.. Expanding archive."
