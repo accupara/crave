@@ -6,7 +6,8 @@ Crave looks for a `crave.conf` configuration file in the current working directo
 
 ## Installation
 
-The latest stable version of `crave` can be download from the [crave GitHub](https://github.com/accupara/crave/releases) page. Pick the binary for your platform. For Windows users, download and unzip the contents into a folder.
+The latest stable version of `crave` can be download from the [crave GitHub](https://github.com/accupara/crave/releases) page. Pick the binary for your platform. For Windows users, download and unzip the contents into a folder.    
+For Mac: `brew install --cask accupara/crave/crave`
 
 Alternatively, your administrator approved version of crave can be downloaded from the "Downloads" page in the Crave UI.
 
