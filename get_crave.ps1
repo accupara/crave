@@ -3,7 +3,7 @@
 $OS="Windows"
 
 $Env:CRAVE_URL_BASE = "https://github.com/accupara/crave/releases/download/"
-$Env:CRAVE_VERSION = "0.2-7033"
+$Env:CRAVE_VERSION = "0.2-7037"
 $Env:CRAVE_POSTFIX = ".zip"
 if ($IsWindows -or $ENV:OS) {
     Write-Host "Downloading $Env:CRAVE_VERSION for Windows"
