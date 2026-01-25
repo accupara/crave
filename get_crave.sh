@@ -8,7 +8,7 @@ crave_arch='amd64'
 crave_postfix='.bin'
 crave_default_location='/usr/local/bin'
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "linux"* ]]; then
     # Linux
     os='linux'
     crave_arch=`uname -m`
